@@ -9,7 +9,7 @@ public class cardHolder
     String lastName;
     double balance;
 
-    public cardHolder(string cardNum, int pin, String firstName, String lastName)
+    public cardHolder(string cardNum, int pin, String firstName, String lastName, double balance)
     {
         this.cardNum = cardNum;
         this.pin = pin;
@@ -84,7 +84,7 @@ public class cardHolder
         {
             Console.WriteLine("How much $$$ would ypu like to deposit: ");
             double deposit = Double.Parse(Console.ReadLine());
-            currentUser.setBalance(deposit);
+            currentUser.setBalance(deposit + currentUser.balance);
             Console.WriteLine("Thank you for your $$$. Your new balance is : " + currentUser.getBalance());
         }
 
@@ -118,54 +118,59 @@ public class cardHolder
 
         // Prompt User
         Console.WriteLine("Welcome to EasyATM");
-        Console.WriteLinne("Please insert your Debit/Credit Card: ");
-        String debitCardNum = "";
+        Console.WriteLine("Please insert your Debit/Credit Card: ");
+        String? debitCardNum = "";
         cardHolder currentUser;
 
-        while(true)
+        while (true)
         {
             try
             {
                 debitCardNum = Console.ReadLine();
                 // Check against our db
                 currentUser = cardHolders.FirstOrDefault(a => a.cardNum == debitCardNum);
-                if (currentUser != null { break; }
-                else { Console.WriteLine("CArd not recognized. lease try again."); }
+                if (currentUser != null) { break; }
+                else { Console.WriteLine("Card not recognized. lease try again."); }
             }
-            catch { Console.WriteLine("Card not recognized. Please try again.");
+            catch
+            {
+                Console.WriteLine("Card not recognized. Please try again.");
+            }
+        }
+        Console.WriteLine("Please enter your Pin: ");
+        int userPin = 0;
+        while (true)
+        {
+            try
+            {
+                userPin = int.Parse(Console.ReadLine());
+                if (currentUser.getPin() == userPin) { break; }
+                else { Console.WriteLine("Card not recogniced. Please try again."); }
+            }
+            catch { Console.WriteLine("Card not recognized. Please try again."); }
         }
 
-            Console.WriteLine("Please enter your Pin: ");
-            int userPin = 0;
-            while (true)
+        Console.WriteLine("Welcome " + currentUser.getFirstName() + " :)");
+        int option = 0;
+        do
+        {
+            printOptions();
+            try
             {
-                try
-                {
-                    userPin = int.Parse(Console.ReadLine());
-                    if (currentUser.getPin() == userPin) { break; }
-                    else { Console.WriteLine("Card not recogniced. Please try again."); }
-                }
-                catch { Console.WriteLine("Card not recognized. Please try again."); }
+                option = int.Parse(Console.ReadLine());
             }
+            catch { }
+            if (option == 1) { deposit(currentUser); }
+            else if (option == 2) { withdraw(currentUser); }
+            else if (option == 3) { balance(currentUser); }
+            else if (option == 4) { break; }
+            else { option = 0; }
+        }
+        while (option != 4);
+        Console.WriteLine("Thank You! Have a nice day. :)");
 
-            Console.WriteLine("Welcome " + currentUser.getFirstName() + " :)");
-            int option = 0;
-            do
-            {
-                printOptions();
-                try
-                {
-                    option = int.Parse(Console.ReadLine());
-                }
-                catch { }
-                if (option == 1) { deposit(currentUser); }
-                else if(option == 2) {  withdraw(currentUser); }
-                else if(option == 3) { balance(currentUser); }
-                else if(option == 4) { break; }
-                else { option = 0; }
-            }
-            while (option != 4);
-            Console.WriteLine("Thank You! Have a nice day. :)");
+        Console.ReadKey();
+
     }
-
 }
+
